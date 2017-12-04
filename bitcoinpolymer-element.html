@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 
 <dom-module id="bitcoinpolymer-element">
   <template>
@@ -8,6 +9,19 @@
       }
     </style>
     <h2>Hello [[prop1]]!</h2>
+    <p>{{prop2}}</p>
+
+    <p>Coin price</p>
+    <p>{{coinPrice}}</p>
+
+
+    <!--<iron-ajax auto url="http://mapy.geoportal.gov.pl/wss/service/SLN/guest/sln/adr/ul/PL.PZGIK.200/ffdc4435-1b1b-4418-95e1-06920c5a6d87/pel.json"
+      handle-as="json" on-response="handleWojResponse" debounce-duration="300"></iron-ajax>-->
+
+
+    <iron-ajax id="coinbase" handle-as="json" on-response="handleBTCResponse" debounce-duration="300"></iron-ajax>
+
+
   </template>
 
   <script>
@@ -27,12 +41,53 @@
             type: String,
             value: 'bitcoinpolymer-element'
           },
-          prop2:{
-            type: Stirng,
+          prop2: {
+            type: String,
             value: "test"
+          },
+          coinPrice:{
+            type:Array,
+            value: {}
           }
+          
         };
       }
+
+      getBTCResponse(){
+        let ajax = this.$.coinbase;
+        ajax.url = "https://api.coinbase.com/v2/prices/USD/spot";
+        ajax.generateRequest()
+      }
+      handleBTCResponse(response){
+        console.log("BTC", response.detail.__data.response)
+        if (response && response.detail && response.detail.response){
+          let d =  response.detail.response;
+          console.log("d");
+
+         this.coinPrice = JSON.stringify(d);
+        }
+      }
+
+      handleWojResponse(response) {
+
+        if (response && response.detail && response.detail.response) {
+          let data = response.detail.response;
+          console.log(data);
+          var myJSON = JSON.stringify(data);
+          this.prop2 = myJSON
+          }
+      }
+
+      ready(){
+        super.ready();
+        Polymer.RenderStatus.afterNextRender(this, function(){
+          this.getBTCResponse();
+        })
+
+      }
+
+
+      
     }
 
     window.customElements.define(BitcoinpolymerElement.is, BitcoinpolymerElement);
