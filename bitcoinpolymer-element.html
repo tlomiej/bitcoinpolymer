@@ -1,7 +1,8 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 
-<script src="../chart.js/dist/Chart.js"></script>
+<script src="bower_components/chart.js/dist/Chart.js"></script>
+<script src="bower_components/moment/moment.js"></script>
 
 <dom-module id="bitcoinpolymer-element">
   <template>
@@ -26,12 +27,18 @@
     <iron-ajax id="coinbase" handle-as="json" on-response="handleBTCResponse" debounce-duration="300"></iron-ajax>
 
     <p>Wykres</p>
-    <div hidden="false" style="width:100%; height:700px; margin: 0 auto">
-      <canvas height="2" width="4" id="canvas"></canvas>
+ <div>
+    <canvas id="canvas" width="400" height="400"></canvas>
+  </div>
 
-    </div>
 
+<!--     <div hidden="false" styleTEST="width:100%; height:700px; margin: 0 auto">
+      <canvas height="200" width="400" id="canvas"></canvas>
+
+    </div> -->
+<!-- <div>
     <canvas id="myChart" width="400" height="400"></canvas>
+  </div> -->
 
   </template>
 
@@ -79,12 +86,11 @@
           this.coinPrice = JSON.stringify(d);
 
           this.computeGraph(d);
-          this.tempGraph();
+          //this.tempGraph();
         }
       }
       tempGraph() {
-        var ctx = this.$.myChart.getContext('2d')
-        //var ctx = document.getElementById("myChart").getContext('2d');
+        var ctx = this.$.canvas.getContext('2d')
         var myChart = new Chart(ctx, {
           type: 'bar',
           data: {
@@ -134,54 +140,55 @@
       computeGraph(data) {
         var label = [];
         var price = [];
-        /* data.response.data.prices.forEach(function (element) {
+        console.log(typeof(data.data))
+        console.log(data.data)
+        var today = new Date();
+
+
+
+
+        data.data.forEach(function (element) {
+
+          console.log(element);
+          //label.push(this._computeDateTime(element.time));
+          label.push(today);
+          price.push(element.amount);
+        }, this); 
+
+
+  /*       data.response.data.prices.forEach(function (element) {
           label.push(this._computeDateTime(element.time));
           price.push(element.price);
-        }, this); */
+        }, this);  */
         this._generateLineChart(price, label)
       }
 
       _generateLineChart(price, time) {
+        console.log('price',price);
         if (this.myLineChart != undefined) this.myLineChart.destroy();
-        var ctx = this.$.canvas//.getContext('2d')
-        console.log(ctx);
+        var ctxx = this.$.canvas.getContext('2d')
+        console.log(ctxx);
         console.log("Create graph");
-        this.myLineChart = new Chart(ctx, {
+        var myChart = new Chart(ctxx, {
           type: 'line',
-          date: {
-            labels: time,
-            datasets: [
-              {
-                pointRadius: 0,
-                label: "labelName",
-                backgroundColor: "rgba(111, 124, 186, 0.1)",
-                borderColor: "rgba(111, 124, 186, 1)",
-                borderWidth: 2,
-                data: [86, 114, 106, 106, 107, 111, 133, 221, 783, 2478]
-
-              }
-            ]
+          data: {
+            labels:[moment().format(),moment().format(),moment().format(),moment().format()],
+            datasets: [{
+              data: price,
+             
+              borderWidth: 2
+            }]
           },
           options: {
-            animation: false,
-            tooltips: {
-              mode: 'index',
-              intersect: false
-            },
             scales: {
-              xAxes: [{
-                gridLines: {
-                  display: false
-                }
-              }],
               yAxes: [{
-                gridLines: {
-                  display: false
+                ticks: {
+                  beginAtZero: true
                 }
               }]
             }
           }
-        })
+        });
 
 
       }

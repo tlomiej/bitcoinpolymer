@@ -4,7 +4,8 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "iron-ajax": "PolymerElements/iron-ajax#^2.0.6",
-    "chart.js": "^2.7.1"
+    "chart.js": "^2.7.1",
+    "moment": "^2.20.1"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
@@ -13,5 +14,24 @@
   },
   "resolutions": {
     "polymer": "^2.0.0"
-  }
+  },
+  "homepage": "https://github.com/tlomiej/bitcoinpolymer",
+  "authors": [
+    "tlomiej <bartekstaron@gmail.com>"
+  ],
+  "description": "bitcoin test",
+  "keywords": [
+    "bitcoin",
+    "polymer",
+    "test"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
 }
